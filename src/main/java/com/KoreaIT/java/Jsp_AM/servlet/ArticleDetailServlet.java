@@ -1,11 +1,13 @@
-package com.KoreaIT.java.Jsp_AM;
+package com.KoreaIT.java.Jsp_AM.servlet;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
+
+import com.KoreaIT.java.Jsp_AM.util.DBUtil;
+import com.KoreaIT.java.Jsp_AM.util.SecSql;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -34,16 +36,17 @@ public class ArticleDetailServlet extends HttpServlet {
 		Connection conn = null;
 
 		try {
-			conn = DriverManager.getConnection(url, "root", "");
+			conn = DriverManager.getConnection(url, user, password);
 			response.getWriter().append("연결 성공!");
 
-			DBUtil dbUtil = new DBUtil(request, response);
+			int id = Integer.parseInt(request.getParameter("id"));
 
-			String id = request.getParameter("id");
-			String sql = "SELECT * FROM article WHERE id = '" + id  + "';";
-			
-			Map<String, Object> articleRow = dbUtil.selectRow(conn, sql);
-			
+			SecSql sql = SecSql.from("SELECT *");
+			sql.append("FROM article");
+			sql.append("WHERE id = ?;", id);
+
+			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
+
 			request.setAttribute("articleRow", articleRow);
 			request.getRequestDispatcher("/jsp/article/detail.jsp").forward(request, response);
 
