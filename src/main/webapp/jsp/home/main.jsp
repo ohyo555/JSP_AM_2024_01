@@ -16,7 +16,7 @@
 	</ul>
 	
 	<ul>
-		<li><a href="../article/doWrite">글쓰기로 이동</a></li>
+		<li><a href="../article/write">글쓰기로 이동</a></li>
 	</ul>	
 		
 </body>

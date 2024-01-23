@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
@@ -16,7 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/article/doWrite")
-public class ArticleInsertServlet extends HttpServlet {
+public class ArticleDoWriteServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -37,27 +36,20 @@ public class ArticleInsertServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(url, user, password);
-			response.getWriter().append("연결 성공!");
 
-			request.getRequestDispatcher("/jsp/article/insert.jsp").forward(request, response);
-			
 			String title = request.getParameter("title");
 			String body = request.getParameter("body");
-			
+
 			SecSql sql = SecSql.from("INSERT INTO article");
 			sql.append("SET regDate = NOW(),");
-			sql.append("title = ?,",title);
-			sql.append("`body` = ?;",body);
-			
+			sql.append("title = ?,", title);
+			sql.append("`body` = ?;", body);
+
 			int id = DBUtil.insert(conn, sql);
 
 			response.getWriter()
-			.append(String.format("<script>alert('%d번 글이 등록되었습니다.'); location.replace('list');</script>", id));
-//
-//			request.setAttribute("title", title);
-//			request.setAttribute("body", body);
-//			request.getRequestDispatcher("/jsp/article/insert.jsp").forward(request, response);
-			
+					.append(String.format("<script>alert('%d번 글이 등록되었습니다.'); location.replace('list');</script>", id));
+
 		} catch (SQLException e) {
 			System.out.println("에러 : " + e);
 		} finally {
@@ -71,4 +63,8 @@ public class ArticleInsertServlet extends HttpServlet {
 		}
 	}
 
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doGet(request, response);
+	}
 }
