@@ -13,6 +13,11 @@
 	
 	<ul>
 		<li><a href="../article/list">리스트로 이동</a></li>
+	</ul>
+	
+	<ul>
+		<li><a href="../article/doWrite">글쓰기로 이동</a></li>
 	</ul>	
+		
 </body>
 </html>
