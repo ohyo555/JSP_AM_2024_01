@@ -55,6 +55,7 @@ int totalPage = (int) request.getAttribute("totalPage");
 	<style type="text/css">
 .page {
 	font-size: 1.4rem;
+
 }
 
 .page>a {
@@ -69,13 +70,23 @@ int totalPage = (int) request.getAttribute("totalPage");
 </style>
 
 	<div class="page">
+		<a href="list?page=1">◀</a>
 		<%
-		for (int i = 1; i <= totalPage; i++) {
+			for (int j = cPage; j <  cPage + 3; j++) {
 		%>
-		<a class="<%=cPage == i ? "cPage" : ""%>" href="list?page=<%=i%>"><%=i%></a>
+			<a class="<%=cPage == j ? "cPage" : ""%>" href="list?page=<%=j%>"><%=j%></a>
 		<%
 		}
 		%>
+		<%
+			for (int i = cPage + 3; i <= totalPage; i++) {
+		%>
+			<a class="<%=cPage == i ? "cPage" : ""%>" href="list?page=<%=i%> " style="display:none;"><%=i%></a>
+		<%
+		}
+		%>
+		<a href="list?page=<%=totalPage%>">▶</a>
+		
 	</div>
 
 
