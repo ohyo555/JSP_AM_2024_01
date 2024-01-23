@@ -4,43 +4,37 @@
 
 <%
 Map<String, Object> articleRow = (Map<String, Object>) request.getAttribute("articleRow");
-String title = request.getParameter("title");
-String body = request.getParameter("body");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"">
-<title>게시물 수정</title>
+<meta charset="UTF-8">
+<title>게시물 수정 페이지</title>
 </head>
 <body>
 
 	<h2>게시물 수정</h2>
 
-	<div>
-		번호 :
-		<%=articleRow.get("id")%></div>
-	<div>
-		날짜 :
-		<%=articleRow.get("regDate")%></div>
-	<div>
-		제목 :
-		<%=articleRow.get("title")%><br>
-		수정할 제목 :
-		<input type="text" name="title" placeholder="제목">
-	</div>
-	<div>
-		내용 :
-		<%=articleRow.get("body")%><br>
-		수정할 내용 :
-		<input type="text" name="body" placeholder="내용"></div>
-		
-	<div>
-		<input type="submit" value="전송">
-		<input type="reset" value="취소">
-	</div>
+	<h3><%=articleRow.get("id")%>번 게시물 수정
+	</h3>
 
-	<div><a style="color:green" href="list">리스트로 돌아가기</a></div>
+	<form method="POST" action="doModify">
+		<input type="hidden" value="<%=articleRow.get("id")%>" name="id" />
+		<div>
+			제목 : <input type="text" name="title"
+				value="<%=articleRow.get("title")%>"/ >
+		</div>
+		<div>
+			내용 :
+			<textarea type="text" name="body"><%=articleRow.get("body")%></textarea>
+		</div>
+		<button type="submit">수정</button>
+	</form>
+
+
+	<div>
+		<a style="color: green" href="list">리스트로 돌아가기</a>
+	</div>
 
 </body>
 </html>
