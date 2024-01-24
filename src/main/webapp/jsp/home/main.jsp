@@ -18,6 +18,10 @@
 	<ul>
 		<li><a href="../article/write">글쓰기로 이동</a></li>
 	</ul>	
-		
+	
+	<ul>
+		<li><a href="../member/join">회원가입</a></li>
+	</ul>
+	
 </body>
 </html>

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import com.KoreaIT.java.Jsp_AM.config.Config;
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
 
@@ -24,20 +25,16 @@ public class ArticleListServlet extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 		// DB연결
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName(Config.getDbDriverClassName());
 		} catch (ClassNotFoundException e) {
 			System.out.println("클래스가 없습니다.");
 			e.printStackTrace();
 		}
 
-		String url = "jdbc:mysql://127.0.0.1:3306/JSP_AM?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull";
-		String user = "root";
-		String password = "";
-
 		Connection conn = null;
 
 		try {
-			conn = DriverManager.getConnection(url, user, password);
+			conn = DriverManager.getConnection(Config.getDbUrl(), Config.getDbUser(), Config.getDbPw());
 
 			int page = 1;
 
@@ -47,13 +44,13 @@ public class ArticleListServlet extends HttpServlet {
 
 			int itemsInAPage = 10;
 			int limitFrom = (page - 1) * itemsInAPage;
-			
+
 			SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
 			sql.append("FROM article");
 
 			int totalCnt = DBUtil.selectRowIntValue(conn, sql);
 			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);
-			
+
 			sql = SecSql.from("SELECT *");
 			sql.append("FROM article");
 			sql.append("ORDER BY id DESC");
@@ -62,8 +59,11 @@ public class ArticleListServlet extends HttpServlet {
 			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
 
 			request.setAttribute("page", page);
+			request.setAttribute("totalCnt", totalCnt);
 			request.setAttribute("totalPage", totalPage);
+			request.setAttribute("itemsInAPage", itemsInAPage);
 			request.setAttribute("articleRows", articleRows);
+
 			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
 
 		} catch (SQLException e) {
