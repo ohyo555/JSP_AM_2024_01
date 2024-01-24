@@ -39,15 +39,15 @@ public class MemberDoConfirmServlet extends HttpServlet {
 
 			String loginId = request.getParameter("loginId");
 
-			SecSql sql = SecSql.from("SELECT *");
+			SecSql sql = SecSql.from("SELECT IF(COUNT(*) > 0, 1,0)");
 			sql.append("FROM `member`");
 			sql.append("WHERE loginId = ?;", loginId);
 
 			boolean IsLoginId = DBUtil.selectRowBooleanValue(conn, sql);
-
+			// response.getWriter().append(sql);
 			if(IsLoginId) {
 				response.getWriter()
-				.append(String.format("<script>alert('%중복된 아이디가 존재합니다.'); location.href('join');  ;</script>", loginId));
+				.append(String.format("<script>alert('중복된 아이디가 존재합니다.'); location.replace('join');  ;</script>"));
 			} else {
 				
 			}
