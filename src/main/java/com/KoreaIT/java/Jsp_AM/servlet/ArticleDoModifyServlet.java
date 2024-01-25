@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.KoreaIT.java.Jsp_AM.config.Config;
+import com.KoreaIT.java.Jsp_AM.exception.SQLErrorException;
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
 
@@ -59,6 +60,8 @@ public class ArticleDoModifyServlet extends HttpServlet {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} catch (SQLErrorException e) {
+				e.getOrigin().printStackTrace();
 			}
 		}
 	}

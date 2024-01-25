@@ -66,15 +66,7 @@
 
 			JoinForm__submitDone = true;
 			form.submit();
-		}
-	</script>
-	
-	<script type="text/javascript">
-		function send() {
-//  		console.log(form.logindId.value)
- 		var CheckId = document.getElementById('loginId');
-		location.href = "doConfirm?loginId="+ CheckId.value;
-		console.log(CheckId.value)
+
 		}
 	</script>
 
@@ -82,8 +74,7 @@
 		onsubmit="JoinForm__submit(this); return false;">
 		<div>
 			로그인 아이디 : <input autocomplete="off" type="text"
-				placeholder="아이디를 입력해주세요" name="loginId" id="loginId"/>
-			<input type="button" onclick="send()" value = "중복체크" class = "id_btn">
+				placeholder="아이디를 입력해주세요" name="loginId" />
 		</div>
 		<div>
 			로그인 비밀번호 : <input autocomplete="off" type="text"

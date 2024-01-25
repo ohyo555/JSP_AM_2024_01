@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.KoreaIT.java.Jsp_AM.config.Config;
+import com.KoreaIT.java.Jsp_AM.exception.SQLErrorException;
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
 
@@ -75,6 +76,8 @@ public class ArticleListServlet extends HttpServlet {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} catch (SQLErrorException e) {
+				e.getOrigin().printStackTrace();
 			}
 		}
 	}

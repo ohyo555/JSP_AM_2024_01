@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.KoreaIT.java.Jsp_AM.exception.SQLErrorException;
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
 
@@ -49,7 +50,9 @@ public class MemberDoConfirmServlet extends HttpServlet {
 				response.getWriter()
 				.append(String.format("<script>alert('중복된 아이디가 존재합니다.'); location.replace('join');  ;</script>"));
 			} else {
-				
+				response.getWriter()
+				.append(String.format("<script>alert('%s는 사용가능한 아이디입니다.'); history.back(); ;</script>", loginId));
+				return;
 			}
 
 		} catch (SQLException e) {
@@ -61,6 +64,8 @@ public class MemberDoConfirmServlet extends HttpServlet {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+			} catch (SQLErrorException e) {
+				e.getOrigin().printStackTrace();
 			}
 		}
 	}
