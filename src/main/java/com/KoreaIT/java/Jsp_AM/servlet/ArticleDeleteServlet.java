@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/article/doDelete")
 public class ArticleDeleteServlet extends HttpServlet {
@@ -35,20 +36,41 @@ public class ArticleDeleteServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(Config.getDbUrl(), Config.getDbUser(), Config.getDbPw());
-			response.getWriter().append("연결 성공!");
+
+			HttpSession session = request.getSession();
 
 			int id = Integer.parseInt(request.getParameter("id"));
+			int writer = Integer.parseInt(request.getParameter("writer"));
+					
+			if (session.getAttribute("loginedMemberId") != null) {
+				
+				int loginedMemberId = (int) session.getAttribute("loginedMemberId");
+				Map<String, Object> loginedMember = (Map<String, Object>) session.getAttribute("loginedMember");
+//				System.out.println(loginedMemberId);
+				if (writer == loginedMemberId) {
+					SecSql sql = SecSql.from("DELETE");
+					sql.append("FROM article");
+					sql.append("WHERE id = ?", id); // 게시글 아이디
+					sql.append("AND writer = ?;", loginedMemberId);
 
-			SecSql sql = SecSql.from("DELETE");
-			sql.append("FROM article");
-			sql.append("WHERE id = ?;", id);
+					DBUtil.delete(conn, sql);
 
-			DBUtil.delete(conn, sql);
-
-			response.getWriter()
-					.append(String.format("<script>alert('%d번 글이 삭제되었습니다.'); location.replace('list');</script>", id));
-
+					response.getWriter()
+							.append(String.format("<script>alert('%d번 글이 삭제되었습니다.'); location.replace('list');</script>", id));
+				} else {
+					response.getWriter()
+					.append(String.format("<script>alert('수정 및 삭제는 작성자만 가능합니다.'); location.replace('list');</script>"));
+				}
+				
+			} else {
+				response.getWriter()
+				.append(String.format("<script>alert('로그인 후 이용해주세요.'); location.replace('list');</script>"));
+			}
+				
 		} catch (SQLException e) {
+			System.out.println("에러 : " + e);
+		} catch (SQLErrorException e) {
+			e.getOrigin().printStackTrace();
 			System.out.println("에러 : " + e);
 		} finally {
 			try {

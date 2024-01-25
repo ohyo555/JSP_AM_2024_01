@@ -28,8 +28,8 @@ Map<String, Object> articleRow = (Map<String, Object>) request.getAttribute("art
 		내용 :
 		<%=articleRow.get("body")%></div>
 	<div>
-		<a href="modify?id=<%=articleRow.get("id")%>">수정</a> <a
-			href="doDelete?id=<%=articleRow.get("id")%>">del</a>
+		<a href="modify?id=<%=articleRow.get("id")%>&writer=<%=articleRow.get("writer")%>">수정</a>
+		<a href="doDelete?id=<%=articleRow.get("id")%>&writer=<%=articleRow.get("writer")%>">삭제</a>
 	</div>
 
 	<div>

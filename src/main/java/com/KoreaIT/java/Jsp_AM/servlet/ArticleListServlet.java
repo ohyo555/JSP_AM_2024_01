@@ -9,8 +9,10 @@ import java.util.Map;
 
 import com.KoreaIT.java.Jsp_AM.config.Config;
 import com.KoreaIT.java.Jsp_AM.exception.SQLErrorException;
+import com.KoreaIT.java.Jsp_AM.service.ArticleService;
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
+import com.KoreaIT.java.Jsp_AM.dao.ArticleDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -45,26 +47,22 @@ public class ArticleListServlet extends HttpServlet {
 
 			int itemsInAPage = 10;
 			int limitFrom = (page - 1) * itemsInAPage;
+			
+			SecSql countsql = ArticleService.countlist();
+			
+			int totalCnt = DBUtil.selectRowIntValue(conn, countsql);
+			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);			
 
-			SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
-			sql.append("FROM article");
-
-			int totalCnt = DBUtil.selectRowIntValue(conn, sql);
-			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);
-
-			sql = SecSql.from("SELECT *");
-			sql.append("FROM article");
-			sql.append("ORDER BY id DESC");
-			sql.append("LIMIT ?, ?;", limitFrom, itemsInAPage);
-
-			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
+			SecSql listsql = ArticleService.list(itemsInAPage, limitFrom);
+			
+			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, listsql);
 
 			request.setAttribute("page", page);
 			request.setAttribute("totalCnt", totalCnt);
 			request.setAttribute("totalPage", totalPage);
 			request.setAttribute("itemsInAPage", itemsInAPage);
 			request.setAttribute("articleRows", articleRows);
-
+			response.getWriter().append(articleRows.toString());
 			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
 
 		} catch (SQLException e) {
