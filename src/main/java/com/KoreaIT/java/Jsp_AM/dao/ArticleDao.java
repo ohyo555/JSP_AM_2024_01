@@ -23,15 +23,15 @@ public class ArticleDao {
 		return sql;
 	}
 
-	public SecSql dowrite(int loginedMemberId, String title, String body) {
-		SecSql sql = SecSql.from("INSERT INTO article");
-		sql.append("SET regDate = NOW(),");
-		sql.append("writer = ?,", loginedMemberId);
-		sql.append("title = ?,", title);
-		sql.append("`body` = ?;", body);
-		
-		return sql;
-	}
+//	public SecSql dowrite(int loginedMemberId, String title, String body) {
+//		SecSql sql = SecSql.from("INSERT INTO article");
+//		sql.append("SET regDate = NOW(),");
+//		sql.append("writer = ?,", loginedMemberId);
+//		sql.append("title = ?,", title);
+//		sql.append("`body` = ?;", body);
+//		
+//		return sql;
+//	}
 
 	
 	

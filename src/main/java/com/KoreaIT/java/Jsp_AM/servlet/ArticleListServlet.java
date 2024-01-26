@@ -9,16 +9,15 @@ import java.util.Map;
 
 import com.KoreaIT.java.Jsp_AM.config.Config;
 import com.KoreaIT.java.Jsp_AM.exception.SQLErrorException;
-import com.KoreaIT.java.Jsp_AM.service.ArticleService;
 import com.KoreaIT.java.Jsp_AM.util.DBUtil;
 import com.KoreaIT.java.Jsp_AM.util.SecSql;
-import com.KoreaIT.java.Jsp_AM.dao.ArticleDao;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/article/list")
 public class ArticleListServlet extends HttpServlet {
@@ -47,26 +46,50 @@ public class ArticleListServlet extends HttpServlet {
 
 			int itemsInAPage = 10;
 			int limitFrom = (page - 1) * itemsInAPage;
-			
-			SecSql countsql = ArticleService.countlist();
-			
-			int totalCnt = DBUtil.selectRowIntValue(conn, countsql);
-			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);			
 
-			SecSql listsql = ArticleService.list(itemsInAPage, limitFrom);
-			
-			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, listsql);
+			SecSql sql = SecSql.from("SELECT COUNT(*) AS cnt");
+			sql.append("FROM article");
+
+			int totalCnt = DBUtil.selectRowIntValue(conn, sql);
+			int totalPage = (int) Math.ceil(totalCnt / (double) itemsInAPage);
+
+			sql = SecSql.from("SELECT A.*, M.name AS writer");
+			sql.append("FROM article AS A");
+			sql.append("INNER JOIN `member` AS M");
+			sql.append("ON A.memberId = M.id");
+			sql.append("ORDER BY id DESC");
+			sql.append("LIMIT ?, ?;", limitFrom, itemsInAPage);
+
+			List<Map<String, Object>> articleRows = DBUtil.selectRows(conn, sql);
 
 			request.setAttribute("page", page);
 			request.setAttribute("totalCnt", totalCnt);
 			request.setAttribute("totalPage", totalPage);
 			request.setAttribute("itemsInAPage", itemsInAPage);
 			request.setAttribute("articleRows", articleRows);
-			response.getWriter().append(articleRows.toString());
+
+			boolean isLogined = false;
+			int loginedMemberId = -1;
+			Map<String, Object> loginedMember = null;
+
+			HttpSession session = request.getSession();
+
+			if (session.getAttribute("loginedMemberId") != null) {
+				isLogined = true;
+				loginedMemberId = (int) session.getAttribute("loginedMemberId");
+				loginedMember = (Map<String, Object>) session.getAttribute("loginedMember");
+			}
+
+			request.setAttribute("isLogined", isLogined);
+			request.setAttribute("loginedMemberId", loginedMemberId);
+			request.setAttribute("loginedMember", loginedMember);
+
 			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
 
 		} catch (SQLException e) {
 			System.out.println("에러 : " + e);
+		} catch (SQLErrorException e) {
+			e.getOrigin().printStackTrace();
 		} finally {
 			try {
 				if (conn != null && !conn.isClosed()) {
@@ -74,8 +97,6 @@ public class ArticleListServlet extends HttpServlet {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-			} catch (SQLErrorException e) {
-				e.getOrigin().printStackTrace();
 			}
 		}
 	}

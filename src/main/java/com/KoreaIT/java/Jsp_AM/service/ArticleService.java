@@ -15,7 +15,7 @@ public class ArticleService {
 		return articleDao.countlist();
 	}
 
-	public static SecSql dowrite(int loginedMemberId, String title, String body) {
-		return articleDao.dowrite(loginedMemberId, body, body);
-	}
+//	public static SecSql dowrite(int loginedMemberId, String title, String body) {
+//		return articleDao.dowrite(loginedMemberId, body, body);
+//	}
 }
