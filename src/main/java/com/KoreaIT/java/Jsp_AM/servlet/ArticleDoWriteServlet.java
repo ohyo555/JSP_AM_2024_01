@@ -67,7 +67,7 @@ public class ArticleDoWriteServlet extends HttpServlet {
 		} finally {
 			try {
 				if (conn != null && !conn.isClosed()) {
-					conn.close();
+					conn.close  ();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
