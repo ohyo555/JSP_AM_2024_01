@@ -54,8 +54,3 @@
   		request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
   	}
   ```
-- 로그인 검증
-![로그인 검증](https://github.com/ohyo555/JSP_AM_2024_01/assets/153146836/b91a9861-8a53-416f-9fcc-ebc5de9696f9)
-
-- 인증 후 글쓰기
-![jsp글쓰기](https://github.com/ohyo555/JSP_AM_2024_01/assets/153146836/70114123-70d9-41bd-9772-83dba3f15376)
